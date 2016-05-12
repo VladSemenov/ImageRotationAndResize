@@ -21,12 +21,7 @@ public class MainFrame extends JFrame {
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         setSize(800, 600);
         setLayout(new BorderLayout());
-
-//        JMenuBar menuBar = new JMenuBar();
-//        setJMenuBar(menuBar);
-//
-//        JMenu fileMenu = new JMenu("File");
-//        menuBar.add(fileMenu);
+        setBackground(Color.WHITE);
 
         JToolBar toolBar = new JToolBar();
 
