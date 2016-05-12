@@ -6,6 +6,8 @@ import View.MainFrame;
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
@@ -15,8 +17,10 @@ import java.io.File;
  * Created by Vladislav on 26.04.16.
  */
 public class Controller {
+    public static double DEFAULT_SIZE_MULTIPLIER = 0.2;
     private MainFrame mainFrame;
     private BufferedImage image;
+    private double sizeMultiplier;
 
     public Controller() {
         this.mainFrame = new MainFrame();
@@ -24,8 +28,37 @@ public class Controller {
 
         this.loadImage("michael.jpg");
 
+        this.sizeMultiplier = 1;
+
 //        resizeImage(1000, 1000);
-        this.rotateImage();
+        this.mainFrame.addPlusButtonActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                int width = image.getWidth();
+                int height = image.getHeight();
+                sizeMultiplier += DEFAULT_SIZE_MULTIPLIER;
+                System.out.println(sizeMultiplier);
+                resizeImage((int)(width * sizeMultiplier), (int)(height * sizeMultiplier));
+            }
+        });
+        this.mainFrame.addMinusButtonActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                int width = image.getWidth();
+                int height = image.getHeight();
+                sizeMultiplier -= DEFAULT_SIZE_MULTIPLIER;
+                System.out.println(sizeMultiplier);
+                resizeImage((int)(width * sizeMultiplier), (int)(height * sizeMultiplier));
+            }
+        });
+        this.mainFrame.addRotateButtonActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                ImageProcessor imageProcessor = new ImageProcessor(image);
+                imageProcessor.rotateImage(mainFrame.getAngle());
+                mainFrame.setImage(imageProcessor.getImage());
+            }
+        });
     }
 
     public void loadImage(String imageName) {
@@ -64,7 +97,6 @@ public class Controller {
                 ImageProcessor imageProcessor = new ImageProcessor(image);
                 imageProcessor.rotateImage(alpha);
                 mainFrame.setImage(imageProcessor.getImage());
-
             }
         });
     }

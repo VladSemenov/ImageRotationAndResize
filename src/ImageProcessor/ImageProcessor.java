@@ -23,50 +23,21 @@ public class ImageProcessor {
     }
 
     public void resizeImage(int newWidth, int newHeight) {
-        int width = this.image.getWidth();
-        int heigth = this.image.getHeight();
-//        int[] temp = new int[newWidth * newHeight];
+
+        int height = this.image.getHeight();
         BufferedImage newImage = new BufferedImage(newWidth, newHeight, BufferedImage.TYPE_INT_RGB);
 
-        int a;
-        int b;
-        int c;
-        int d;
-        int x;
-        int y;
-        int index;
-        float x_ratio = ((float) (width - 1)) / newWidth;
-        float y_ratio = ((float) (heigth - 1)) / newHeight;
-        float x_diff, y_diff, blue, red, green;
-        int offset = 0;
-        for (int i = 0; i < newHeight; i++) {
-            for (int j = 0; j < newWidth; j++) {
-                x = (int) (x_ratio * j);
-                y = (int) (y_ratio * i);
-                x_diff = (x_ratio * j) - x;
-                y_diff = (y_ratio * i) - y;
-                index = (y * width + x);
-                a = pixels[index];
-                b = pixels[index + 1];
-                c = pixels[index + width];
-                d = pixels[index + width + 1];
+        double scale = (double) height / newHeight;
 
-                // Y = A(1-w)(1-h) + B(w)(1-h) + C(h)(1-w) + D(wh)
-                red = ((a >> 16) & 0xff) * (1 - x_diff) * (1 - y_diff) + ((b >> 16) & 0xff) * (x_diff) * (1 - y_diff)
-                        + ((c >> 16) & 0xff) * (y_diff) * (1 - x_diff) + ((d >> 16) & 0xff) * (x_diff * y_diff);
-
-                green = ((a >> 8) & 0xff) * (1 - x_diff) * (1 - y_diff) + ((b >> 8) & 0xff) * (x_diff) * (1 - y_diff)
-                        + ((c >> 8) & 0xff) * (y_diff) * (1 - x_diff) + ((d >> 8) & 0xff) * (x_diff * y_diff);
-
-                blue = (a & 0xff) * (1 - x_diff) * (1 - y_diff) + (b & 0xff) * (x_diff) * (1 - y_diff)
-                        + (c & 0xff) * (y_diff) * (1 - x_diff) + (d & 0xff) * (x_diff * y_diff);
-
-                int currentPixel = ((((int) red) << 16) & 0xff0000) | ((((int) green) << 8) & 0xff00) | ((int) blue);
-                newImage.setRGB(j, i, currentPixel);
+        for (int y = 0; y < newHeight - 1; y++) {
+            for (int x = 0; x < newWidth - 1; x++) {
+                newImage.setRGB(x, y, this.image.getRGB((int)(x * scale),(int)(y * scale)));
             }
         }
+
         this.image = newImage;
     }
+
     public void rotateImage(int alpha) {
 
         BufferedImage rotatedImage = new BufferedImage(image.getWidth(), image.getHeight(), BufferedImage.TYPE_INT_RGB);
@@ -133,7 +104,6 @@ public class ImageProcessor {
         this.image = rotatedImage;
     }
     public BufferedImage getImage(){
-        System.out.println("width:" + this.image.getWidth() + "height:" + this.image.getHeight());
         return this.image;
     }
 }
